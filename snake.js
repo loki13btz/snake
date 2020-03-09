@@ -98,6 +98,10 @@ Snake.prototype.move = function() {
     this.segments.unshift(newHead);
     if (newHead.equal(apple.position)) {
         score++;
+        if (this.segments.length == (widthInBlocks - 2) * (heightInBlocks - 2)) {
+            gameOver();
+            return;
+        }
         apple.move();
     } else {
         this.segments.pop();
@@ -137,9 +141,23 @@ Apple.prototype.draw = function() {
     this.position.drawCircle("Crimson");
 };
 Apple.prototype.move = function() {
-    var randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
-    var randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
-    this.position = new Block(randomCol, randomRow);
+    var randomCol;
+    var randomRow;
+    var appleBlock;
+    var appleInSnake = true;
+    while (appleInSnake) {
+        randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
+        randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
+        appleBlock = new Block(randomCol, randomRow);
+        appleInSnake = false;
+        for (var i = 0; i < snake.segments.length; i++) {
+            if (appleBlock.equal(snake.segments[i])) {
+                appleInSnake = true;
+                break;
+            }
+        }
+    }
+    this.position = appleBlock;
 };
 var snake = NaN;
 var apple = NaN;
